@@ -1,8 +1,10 @@
 # Conecta3D — Guia de instalação
 
 Plataforma web local que conecta pessoas e clínicas que precisam de peças
-customizadas e acessíveis (adaptações, órteses simples, ferramentas
-ergonômicas) a voluntários locais com impressoras 3D.
+customizadas e acessíveis — adaptações de baixa complexidade, como
+engrossadores de talher e suportes de utensílio — a voluntários locais com
+impressoras 3D. Órteses e próteses ficam fora do escopo, por exigirem
+prescrição e acompanhamento de profissional de saúde.
 
 ## Pré-requisitos
 

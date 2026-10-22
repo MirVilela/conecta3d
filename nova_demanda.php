@@ -81,7 +81,7 @@ require 'topo.php';
             <label for="tipo_peca">Tipo de peça</label>
             <input type="text" id="tipo_peca" name="tipo_peca" maxlength="100"
                    value="<?= htmlspecialchars($_POST['tipo_peca'] ?? '') ?>"
-                   placeholder="Ex: órtese, ferramenta ergonômica...">
+                   placeholder="Ex: engrossador de talher, suporte de utensílio...">
         </div>
 
         <div class="form-grupo">

@@ -38,7 +38,7 @@ CREATE TABLE demandas (
     voluntario_id     INT                 NULL,
     titulo            VARCHAR(150)        NOT NULL,
     descricao         TEXT                NOT NULL,
-    tipo_peca         VARCHAR(100)        NULL,     -- ex: "órtese", "adaptação ortodôntica"
+    tipo_peca         VARCHAR(100)        NULL,     -- ex: "engrossador de talher", "suporte de utensílio"
     status            ENUM('aberta', 'em_andamento', 'concluida', 'cancelada')
                                            NOT NULL DEFAULT 'aberta',
     ativa             TINYINT(1)          NOT NULL DEFAULT 1,  -- 0 = inativada pelo admin
