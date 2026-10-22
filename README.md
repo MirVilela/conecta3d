@@ -116,6 +116,7 @@ ou grave o hash na coluna `senha` pela aba SQL do phpMyAdmin.
 
 ## Apagar depois de usar
 
-Qualquer arquivo temporário de depuração (ex. `versoes.php`) deve ser **removido da pasta** assim que não for mais
+Qualquer arquivo temporário de depuração (como um script que mostre as
+versões do ambiente) deve ser **removido da pasta** assim que não for mais
 necessário — eles não pedem login e representam risco de segurança se
 esquecidos no ar.
