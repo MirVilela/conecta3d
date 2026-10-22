@@ -44,9 +44,17 @@ require 'topo.php';
 
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
     <h2 style="margin:0;">
-        <?= $tipo === 'voluntario' ? 'Demandas disponíveis e suas peças' : 'Minhas demandas' ?>
+        <?php if ($tipo === 'voluntario'): ?>
+            Demandas disponíveis e suas peças
+        <?php elseif ($tipo === 'admin'): ?>
+            Todas as demandas
+        <?php else: ?>
+            Minhas demandas
+        <?php endif; ?>
     </h2>
-    <a href="nova_demanda.php" class="botao">+ Nova demanda</a>
+    <?php if ($tipo === 'solicitante' || $tipo === 'clinica'): ?>
+        <a href="nova_demanda.php" class="botao">+ Nova demanda</a>
+    <?php endif; ?>
 </div>
 
 <?php if (empty($demandas)): ?>

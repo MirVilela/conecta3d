@@ -5,8 +5,8 @@ exigirLogin();
 $tipo = $_SESSION['usuario_tipo'];
 $uid  = $_SESSION['usuario_id'];
 
-// Voluntário não cria demanda, só atende — evita uso indevido da tela
-if ($tipo === 'voluntario') {
+// Só solicitante e clínica criam demandas; voluntário atende e admin administra
+if (!in_array($tipo, ['solicitante', 'clinica'], true)) {
     header('Location: painel.php');
     exit;
 }
