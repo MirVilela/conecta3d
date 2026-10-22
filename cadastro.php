@@ -19,8 +19,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $telefone = trim($_POST['telefone'] ?? '');
     $cidade   = trim($_POST['cidade'] ?? '');
 
+    // Limites iguais aos tamanhos das colunas em usuarios, para o banco
+    // não cortar o texto sem avisar
     if ($nome === '' || $email === '' || $senha === '') {
         $erro = 'Preencha nome, e-mail e senha.';
+    } elseif (mb_strlen($nome) > 150) {
+        $erro = 'O nome pode ter no máximo 150 caracteres.';
+    } elseif (mb_strlen($email) > 150 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $erro = 'Informe um e-mail válido.';
+    } elseif (mb_strlen($telefone) > 20) {
+        $erro = 'O telefone pode ter no máximo 20 caracteres.';
+    } elseif (mb_strlen($cidade) > 100) {
+        $erro = 'A cidade pode ter no máximo 100 caracteres.';
     } elseif (!in_array($tipo, $tiposPermitidos, true)) {
         $erro = 'Selecione um tipo de usuário válido.';
     } elseif ($senha !== $confirma) {
@@ -50,7 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'cidade'   => $cidade !== '' ? $cidade : null,
             ]);
 
-            // Já loga o usuário automaticamente após o cadastro
+            // Já loga o usuário automaticamente após o cadastro, com um
+            // ID de sessão novo (evita fixação de sessão)
+            session_regenerate_id(true);
             $_SESSION['usuario_id']   = $pdo->lastInsertId();
             $_SESSION['usuario_nome'] = $nome;
             $_SESSION['usuario_tipo'] = $tipo;
@@ -74,13 +86,13 @@ require 'topo.php';
     <form method="post" action="cadastro.php">
         <div class="form-grupo">
             <label for="nome">Nome</label>
-            <input type="text" id="nome" name="nome" required
+            <input type="text" id="nome" name="nome" required maxlength="150"
                    value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>">
         </div>
 
         <div class="form-grupo">
             <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" required
+            <input type="email" id="email" name="email" required maxlength="150"
                    value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
         </div>
 
@@ -96,13 +108,13 @@ require 'topo.php';
 
         <div class="form-grupo">
             <label for="telefone">Telefone (opcional)</label>
-            <input type="tel" id="telefone" name="telefone"
+            <input type="tel" id="telefone" name="telefone" maxlength="20"
                    value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>">
         </div>
 
         <div class="form-grupo">
             <label for="cidade">Cidade (opcional)</label>
-            <input type="text" id="cidade" name="cidade"
+            <input type="text" id="cidade" name="cidade" maxlength="100"
                    value="<?= htmlspecialchars($_POST['cidade'] ?? '') ?>">
         </div>
 

@@ -23,7 +23,9 @@
     <?php if (isset($_SESSION['usuario_id'])): ?>
         <nav class="topo-menu">
             <a href="painel.php">Painel</a>
-            <a href="nova_demanda.php">Nova demanda</a>
+            <?php if (in_array($_SESSION['usuario_tipo'], ['solicitante', 'clinica'], true)): ?>
+                <a href="nova_demanda.php">Nova demanda</a>
+            <?php endif; ?>
         </nav>
 
         <div class="topo-usuario">

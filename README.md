@@ -1,8 +1,10 @@
 # Conecta3D — Guia de instalação
 
 Plataforma web local que conecta pessoas e clínicas que precisam de peças
-customizadas e acessíveis (adaptações, órteses simples, ferramentas
-ergonômicas) a voluntários locais com impressoras 3D.
+customizadas e acessíveis — adaptações de baixa complexidade, como
+engrossadores de talher e suportes de utensílio — a voluntários locais com
+impressoras 3D. Órteses e próteses ficam fora do escopo, por exigirem
+prescrição e acompanhamento de profissional de saúde.
 
 ## Pré-requisitos
 
@@ -54,6 +56,10 @@ ordem**, com o banco selecionado na lateral esquerda:
    e as 3 tabelas (`usuarios`, `demandas`, `historico_status`)
 2. **`banco/dados_ficticios.sql`** — popula com usuários e demandas de teste
 3. **`banco/criar_admin.sql`** — cria o usuário administrador
+
+Se o seu banco foi criado antes da coluna `ativa` existir (erro
+"Unknown column 'd.ativa'"), rode também
+**`banco/migracao_001_demanda_ativa.sql`**.
 
 Use a aba **Importar** do phpMyAdmin, escolhendo cada arquivo e clicando em
 Executar.
@@ -108,10 +114,11 @@ ou grave o hash na coluna `senha` pela aba SQL do phpMyAdmin.
 |---|---|---|
 | Solicitante / Clínica | Só as próprias demandas | Criar demanda, cancelar |
 | Voluntário | Demandas abertas + as que assumiu | Aceitar, concluir |
-| Administrador | Todas as demandas | Forçar qualquer status, excluir permanentemente |
+| Administrador | Todas as demandas, inclusive as inativas | Forçar status, cancelar, inativar e reativar |
 
 ## Apagar depois de usar
 
-Qualquer arquivo temporário de depuração (ex. `versoes.php`) deve ser **removido da pasta** assim que não for mais
+Qualquer arquivo temporário de depuração (como um script que mostre as
+versões do ambiente) deve ser **removido da pasta** assim que não for mais
 necessário — eles não pedem login e representam risco de segurança se
 esquecidos no ar.

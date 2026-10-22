@@ -9,6 +9,11 @@
  * que precise de sessão e/ou banco de dados.
  */
 
+// Cookie de sessão fora do alcance de JavaScript (HttpOnly) e não enviado
+// em requisições disparadas por outros sites (SameSite=Lax); o modo estrito
+// recusa IDs de sessão que não foram criados pelo próprio servidor.
+ini_set('session.use_strict_mode', '1');
+session_set_cookie_params(['httponly' => true, 'samesite' => 'Lax']);
 session_start();
 
 // --- Configurações de conexão ---

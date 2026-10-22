@@ -66,7 +66,7 @@ comando SQL.
 | Login | `index.php` | Todos (não autenticados) | Link para `cadastro.php` |
 | Painel | `painel.php` | Todos | Lista varia por papel: solicitante/clínica vê as próprias; voluntário vê abertas + as que assumiu; admin vê todas |
 | Nova demanda | `nova_demanda.php` | Solicitante e clínica | Voluntário é redirecionado ao painel se tentar acessar |
-| Detalhe da demanda | `demanda.php` | Todos (com permissão) | Histórico + botões de status conforme o papel; admin tem seção extra para forçar status ou excluir |
+| Detalhe da demanda | `demanda.php` | Todos (com permissão) | Histórico + botões de status conforme o papel; admin tem seção extra para forçar status e inativar/reativar |
 
 `sair.php` não tem tela: encerra a sessão (`session_destroy()`) e volta
 ao login.

@@ -29,6 +29,7 @@ erDiagram
     text descricao
     varchar tipo_peca
     enum status
+    tinyint ativa
     datetime criado_em
     datetime atualizado_em
   }
@@ -74,6 +75,7 @@ associado a um voluntário que se disponibilizou a imprimir.
 | `descricao` | TEXT | |
 | `tipo_peca` | VARCHAR(100) | opcional |
 | `status` | ENUM | aberta, em_andamento, concluida, cancelada |
+| `ativa` | TINYINT(1) | 1 = ativa (padrão); 0 = inativada pelo administrador |
 | `criado_em` | DATETIME | |
 | `atualizado_em` | DATETIME | atualizado automaticamente a cada mudança |
 
@@ -97,6 +99,9 @@ quando.
   (`RESTRICT`) — preserva o histórico.
 - Remover um voluntário não apaga as demandas que ele atendeu; elas apenas
   ficam sem voluntário associado (`SET NULL`).
-- Excluir uma demanda remove automaticamente todo o seu histórico de status
-  (`CASCADE`) — é o mecanismo por trás do botão "Excluir demanda
-  permanentemente" disponível para o administrador.
+- O sistema não exclui demandas: o administrador pode apenas inativá-las
+  (`ativa = 0`) e reativá-las. A demanda inativa some dos painéis dos demais
+  perfis, mas continua no banco com todo o histórico, e a inativação também
+  gera uma linha em `historico_status`.
+- O `CASCADE` de `historico_status.demanda_id` só age se uma demanda for
+  apagada diretamente no banco (por exemplo, pelo phpMyAdmin).

@@ -178,6 +178,7 @@ a:hover {
 .status-em_andamento{ background: var(--cor-status-andamento); }
 .status-concluida   { background: var(--cor-status-concluida); }
 .status-cancelada   { background: var(--cor-status-cancelada); }
+.status-inativa     { background: var(--cor-texto-suave); }
 
 /* ---------- Formulários ---------- */
 

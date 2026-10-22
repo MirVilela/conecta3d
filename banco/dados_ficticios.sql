@@ -17,7 +17,7 @@ INSERT INTO usuarios (nome, email, senha, tipo, telefone, cidade) VALUES
 -- Demandas de exemplo
 INSERT INTO demandas (solicitante_id, voluntario_id, titulo, descricao, tipo_peca, status) VALUES
 (1, NULL, 'Adaptador de escova de dente',       'Preciso de um adaptador ergonômico para segurar a escova de dente, dificuldade motora na mão direita.', 'ferramenta ergonômica', 'aberta'),
-(2, 3,    'Órtese simples para dedo',           'Órtese leve para imobilização parcial do dedo indicador, uso temporário.',                              'órtese', 'em_andamento'),
+(2, 3,    'Engrossador de talher',              'Engrossador de cabo para garfo e colher, para paciente com preensão fraca.',                            'auxílio para a vida diária', 'em_andamento'),
 (1, 4,    'Suporte adaptado para talher',       'Suporte para facilitar preensão de talher durante refeições.',                                         'ferramenta ergonômica', 'concluida');
 
 -- Histórico de status correspondente às demandas acima

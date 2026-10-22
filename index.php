@@ -21,7 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $usuario = $stmt->fetch();
 
         if ($usuario && password_verify($senha, $usuario['senha'])) {
-            // Login válido: grava os dados usados pelo topo.php e por exigirLogin()
+            // Login válido: troca o ID da sessão (evita fixação de sessão) e
+            // grava os dados usados pelo topo.php e por exigirLogin()
+            session_regenerate_id(true);
             $_SESSION['usuario_id']   = $usuario['id'];
             $_SESSION['usuario_nome'] = $usuario['nome'];
             $_SESSION['usuario_tipo'] = $usuario['tipo'];
