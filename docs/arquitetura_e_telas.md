@@ -73,8 +73,14 @@ ao login.
 
 ## Contas de demonstração
 
-Criadas pelos scripts `dados_ficticios.sql` e `criar_admin.sql`. Todas
-usam a senha `123456`, já gravada como hash de `password_hash()`:
+O script `dados_ficticios.sql` carrega a base usada na verificação: 50
+usuários fictícios nos quatro perfis (24 solicitantes, 8 clínicas, 17
+voluntários e o administrador) e 50 demandas — 15 abertas, 12 em
+andamento, 15 concluídas e 8 canceladas, duas delas inativadas —, com
+106 linhas de histórico entre agosto e outubro de 2026. Nenhum dado
+corresponde a pessoa real. Todas as contas usam a senha `123456`, já
+gravada como hash de `password_hash()`. As mais práticas para demonstrar
+cada perfil:
 
 | E-mail | Papel |
 |---|---|
@@ -82,4 +88,4 @@ usam a senha `123456`, já gravada como hash de `password_hash()`:
 | `clinica@exemplo.com` | Clínica |
 | `joao@exemplo.com` | Voluntário |
 | `ana@exemplo.com` | Voluntário |
-| `admin@conecta3d.com` | Administrador *(criado por `criar_admin.sql`)* |
+| `admin@conecta3d.com` | Administrador |

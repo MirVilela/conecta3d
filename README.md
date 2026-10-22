@@ -54,8 +54,18 @@ ordem**, com o banco selecionado na lateral esquerda:
 
 1. **`banco/criar_tabelas.sql`** — cria o banco `oficinahotrods_joaodavi_banco_projeto`
    e as 3 tabelas (`usuarios`, `demandas`, `historico_status`)
-2. **`banco/dados_ficticios.sql`** — popula com usuários e demandas de teste
-3. **`banco/criar_admin.sql`** — cria o usuário administrador
+2. **`banco/dados_ficticios.sql`** — carrega a base de verificação: 50
+   usuários fictícios nos quatro perfis (24 solicitantes, 8 clínicas,
+   17 voluntários e o administrador) e 50 demandas em todos os estados,
+   cada uma com o histórico completo
+
+O `banco/criar_admin.sql` só é necessário se você **não** carregar os dados
+fictícios: ele cria apenas o administrador.
+
+Para recarregar a base do zero (por exemplo, depois de testes), exclua o
+banco `oficinahotrods_joaodavi_banco_projeto` no phpMyAdmin (aba
+**Operações → Excluir o banco de dados**) e importe os dois scripts de novo:
+`dados_ficticios.sql` usa ids fixos e falha em um banco que já tenha dados.
 
 Se o seu banco foi criado antes da coluna `ativa` existir (erro
 "Unknown column 'd.ativa'"), rode também
@@ -78,6 +88,9 @@ painel sem erro, está tudo funcionando.
 
 ### Contas de demonstração (senha `123456`)
 
+Todos os 50 usuários fictícios usam a senha `123456`. As contas mais
+práticas para demonstrar cada perfil:
+
 | E-mail | Papel |
 |---|---|
 | `maria@exemplo.com` | Solicitante |
@@ -85,6 +98,8 @@ painel sem erro, está tudo funcionando.
 | `joao@exemplo.com` | Voluntário |
 | `ana@exemplo.com` | Voluntário |
 | `admin@conecta3d.com` | Administrador |
+
+Os demais e-mails estão em `banco/dados_ficticios.sql`.
 
 ## Problemas comuns
 
