@@ -60,7 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'cidade'   => $cidade !== '' ? $cidade : null,
             ]);
 
-            // Já loga o usuário automaticamente após o cadastro
+            // Já loga o usuário automaticamente após o cadastro, com um
+            // ID de sessão novo (evita fixação de sessão)
+            session_regenerate_id(true);
             $_SESSION['usuario_id']   = $pdo->lastInsertId();
             $_SESSION['usuario_nome'] = $nome;
             $_SESSION['usuario_tipo'] = $tipo;
