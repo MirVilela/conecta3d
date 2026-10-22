@@ -76,16 +76,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               && in_array($statusAtual, ['aberta', 'em_andamento'])
               && ($tipo === 'admin' || ($tipo !== 'voluntario' && $demanda['solicitante_id'] == $uid))) {
         $novoStatus = 'cancelada';
-        $observacao = 'Demanda cancelada pelo solicitante.';
+        $observacao = $tipo === 'admin'
+            ? 'Demanda cancelada pelo administrador.'
+            : 'Demanda cancelada pelo solicitante.';
 
     } elseif ($acao === 'admin_status' && $tipo === 'admin') {
-        // Admin pode forçar qualquer status, de qualquer status atual
+        // Admin pode forçar qualquer status, mas o voluntário precisa
+        // continuar coerente: reabrir desassocia o voluntário, e
+        // "em andamento"/"concluída" exigem um voluntário associado.
         $statusForcado = $_POST['novo_status'] ?? '';
-        if (in_array($statusForcado, $statusValidos, true)) {
+        if (!in_array($statusForcado, $statusValidos, true)) {
+            $erro = 'Status inválido.';
+        } elseif ($statusForcado === $statusAtual) {
+            $erro = 'A demanda já está nesse status.';
+        } elseif (in_array($statusForcado, ['em_andamento', 'concluida'], true) && !$demanda['voluntario_id']) {
+            $erro = 'Esta demanda não tem voluntário: ela só pode ir para "em andamento" ou "concluída" depois que um voluntário a aceitar.';
+        } else {
             $novoStatus = $statusForcado;
             $observacao = 'Status alterado manualmente pelo administrador.';
-        } else {
-            $erro = 'Status inválido.';
+            if ($statusForcado === 'aberta' && $demanda['voluntario_id']) {
+                $voluntarioIdNovo = null;
+                $observacao = 'Demanda reaberta pelo administrador; voluntário desassociado.';
+            }
         }
 
     } else {
