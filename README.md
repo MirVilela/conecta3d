@@ -55,6 +55,10 @@ ordem**, com o banco selecionado na lateral esquerda:
 2. **`banco/dados_ficticios.sql`** — popula com usuários e demandas de teste
 3. **`banco/criar_admin.sql`** — cria o usuário administrador
 
+Se o seu banco foi criado antes da coluna `ativa` existir (erro
+"Unknown column 'd.ativa'"), rode também
+**`banco/migracao_001_demanda_ativa.sql`**.
+
 Use a aba **Importar** do phpMyAdmin, escolhendo cada arquivo e clicando em
 Executar.
 
@@ -108,7 +112,7 @@ ou grave o hash na coluna `senha` pela aba SQL do phpMyAdmin.
 |---|---|---|
 | Solicitante / Clínica | Só as próprias demandas | Criar demanda, cancelar |
 | Voluntário | Demandas abertas + as que assumiu | Aceitar, concluir |
-| Administrador | Todas as demandas | Forçar qualquer status, excluir permanentemente |
+| Administrador | Todas as demandas, inclusive as inativas | Forçar status, cancelar, inativar e reativar |
 
 ## Apagar depois de usar
 

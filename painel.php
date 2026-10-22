@@ -8,12 +8,13 @@ $uid  = $_SESSION['usuario_id'];
 // A consulta muda conforme o papel do usuário logado:
 // - solicitante/clinica: só o que ele mesmo pediu
 // - voluntario: demandas abertas (disponíveis) + as que ele já assumiu
-// - admin: tudo
+// - admin: tudo, inclusive as inativas
+// Demandas inativas só aparecem para o admin.
 if ($tipo === 'solicitante' || $tipo === 'clinica') {
     $sql = 'SELECT d.*, v.nome AS voluntario_nome
             FROM demandas d
             LEFT JOIN usuarios v ON v.id = d.voluntario_id
-            WHERE d.solicitante_id = :uid
+            WHERE d.solicitante_id = :uid AND d.ativa = 1
             ORDER BY d.criado_em DESC';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['uid' => $uid]);
@@ -22,7 +23,7 @@ if ($tipo === 'solicitante' || $tipo === 'clinica') {
     $sql = 'SELECT d.*, s.nome AS solicitante_nome
             FROM demandas d
             JOIN usuarios s ON s.id = d.solicitante_id
-            WHERE d.status = "aberta" OR d.voluntario_id = :uid
+            WHERE d.ativa = 1 AND (d.status = "aberta" OR d.voluntario_id = :uid)
             ORDER BY d.criado_em DESC';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['uid' => $uid]);
@@ -72,9 +73,14 @@ require 'topo.php';
                         <?php endif; ?>
                     </p>
                 </div>
-                <span class="status status-<?= htmlspecialchars($d['status']) ?>">
-                    <?= htmlspecialchars(str_replace('_', ' ', $d['status'])) ?>
-                </span>
+                <div>
+                    <?php if (!$d['ativa']): ?>
+                        <span class="status status-inativa">inativa</span>
+                    <?php endif; ?>
+                    <span class="status status-<?= htmlspecialchars($d['status']) ?>">
+                        <?= htmlspecialchars(str_replace('_', ' ', $d['status'])) ?>
+                    </span>
+                </div>
             </div>
         </div>
     <?php endforeach; ?>

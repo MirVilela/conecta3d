@@ -41,6 +41,7 @@ CREATE TABLE demandas (
     tipo_peca         VARCHAR(100)        NULL,     -- ex: "órtese", "adaptação ortodôntica"
     status            ENUM('aberta', 'em_andamento', 'concluida', 'cancelada')
                                            NOT NULL DEFAULT 'aberta',
+    ativa             TINYINT(1)          NOT NULL DEFAULT 1,  -- 0 = inativada pelo admin
     criado_em         DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP,
     atualizado_em     DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP
                                            ON UPDATE CURRENT_TIMESTAMP,

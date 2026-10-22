@@ -16,7 +16,8 @@ $stmt = $pdo->prepare(
 $stmt->execute(['id' => $id]);
 $demanda = $stmt->fetch();
 
-if (!$demanda) {
+// Demanda inativa só existe para o admin; para os demais, é como se não existisse
+if (!$demanda || (!$demanda['ativa'] && $tipo !== 'admin')) {
     http_response_code(404);
     require 'topo.php';
     echo '<div class="alerta alerta-erro">Demanda não encontrada.</div>';
@@ -42,14 +43,37 @@ if (!$podeVer) {
 $mensagem = '';
 $erro     = '';
 
-// --- Ação exclusiva de admin: excluir a demanda por completo ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'excluir') {
-    if ($tipo === 'admin') {
-        // ON DELETE CASCADE na tabela historico_status já remove o histórico junto
-        $stmt = $pdo->prepare('DELETE FROM demandas WHERE id = :id');
-        $stmt->execute(['id' => $id]);
+// --- Ações exclusivas de admin: inativar ou reativar a demanda ---
+// A demanda nunca é apagada: inativa, ela sai dos painéis dos demais
+// perfis, mas continua no banco com todo o histórico, e a própria
+// ação fica registrada em historico_status.
+$acaoPost = $_POST['acao'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($acaoPost, ['inativar', 'reativar'], true)) {
+    $ativaNova = $acaoPost === 'reativar' ? 1 : 0;
+
+    if ($tipo === 'admin' && (int)$demanda['ativa'] !== $ativaNova) {
+        $pdo->beginTransaction();
+
+        $stmtAtiva = $pdo->prepare('UPDATE demandas SET ativa = :ativa WHERE id = :id');
+        $stmtAtiva->execute(['ativa' => $ativaNova, 'id' => $id]);
+
+        $stmtHist = $pdo->prepare(
+            'INSERT INTO historico_status (demanda_id, usuario_id, status_anterior, status_novo, observacao)
+             VALUES (:demanda_id, :usuario_id, :status_anterior, :status_novo, :observacao)'
+        );
+        $stmtHist->execute([
+            'demanda_id'      => $id,
+            'usuario_id'      => $uid,
+            'status_anterior' => $demanda['status'],
+            'status_novo'     => $demanda['status'],
+            'observacao'      => $ativaNova
+                ? 'Demanda reativada pelo administrador.'
+                : 'Demanda inativada pelo administrador.',
+        ]);
+
+        $pdo->commit();
     }
-    header('Location: painel.php');
+    header('Location: demanda.php?id=' . $id);
     exit;
 }
 
@@ -157,9 +181,14 @@ require 'topo.php';
 <div class="card" style="margin-top:12px;">
     <div style="display:flex; justify-content:space-between; align-items:start; gap:12px;">
         <h2 style="margin-top:0;"><?= htmlspecialchars($demanda['titulo']) ?></h2>
-        <span class="status status-<?= htmlspecialchars($demanda['status']) ?>">
-            <?= htmlspecialchars(str_replace('_', ' ', $demanda['status'])) ?>
-        </span>
+        <div>
+            <?php if (!$demanda['ativa']): ?>
+                <span class="status status-inativa">inativa</span>
+            <?php endif; ?>
+            <span class="status status-<?= htmlspecialchars($demanda['status']) ?>">
+                <?= htmlspecialchars(str_replace('_', ' ', $demanda['status'])) ?>
+            </span>
+        </div>
     </div>
 
     <p><strong>Tipo de peça:</strong> <?= htmlspecialchars($demanda['tipo_peca'] ?: 'Não informado') ?></p>
@@ -212,12 +241,19 @@ require 'topo.php';
             <button type="submit" class="botao botao-secundario">Forçar status</button>
         </form>
 
-        <form method="post" onsubmit="return confirm('Excluir esta demanda de vez? Essa ação não pode ser desfeita.');">
-            <input type="hidden" name="acao" value="excluir">
-            <button type="submit" class="botao" style="background:var(--cor-status-cancelada);">
-                Excluir demanda permanentemente
-            </button>
-        </form>
+        <?php if ($demanda['ativa']): ?>
+            <form method="post" onsubmit="return confirm('Inativar esta demanda? Ela sai dos painéis dos usuários, mas o histórico é mantido e ela pode ser reativada.');">
+                <input type="hidden" name="acao" value="inativar">
+                <button type="submit" class="botao" style="background:var(--cor-status-cancelada);">
+                    Inativar demanda
+                </button>
+            </form>
+        <?php else: ?>
+            <form method="post">
+                <input type="hidden" name="acao" value="reativar">
+                <button type="submit" class="botao">Reativar demanda</button>
+            </form>
+        <?php endif; ?>
     <?php endif; ?>
 </div>
 
@@ -230,7 +266,7 @@ require 'topo.php';
             <p style="margin:0;">
                 <strong><?= htmlspecialchars($h['usuario_nome']) ?></strong>
                 —
-                <?= $h['status_anterior'] ? htmlspecialchars(str_replace('_', ' ', $h['status_anterior'])) . ' → ' : '' ?>
+                <?= $h['status_anterior'] && $h['status_anterior'] !== $h['status_novo'] ? htmlspecialchars(str_replace('_', ' ', $h['status_anterior'])) . ' → ' : '' ?>
                 <?= htmlspecialchars(str_replace('_', ' ', $h['status_novo'])) ?>
             </p>
             <?php if ($h['observacao']): ?>
